@@ -1,3 +1,14 @@
+# backend stuff for storing lock file.
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "dvo_terraform"
+    storage_account_name = "terraformlock"
+    container_name       = "jenkins"
+    key                  = "arm.jenkins.lock"
+    access_key           = "tPLgDxuAjzeFu32JO5DwD6eh53+TrKyQ+fgohBmvFlH12WzU9PaDM64oNAtQYxk5Pd/m78J0yhPgOC5cja+tVA=="
+  }
+}
+
 # Create resource group that will be used with Jenkins deploy
 resource "azurerm_resource_group" "jenkins" {
   name     = "${var.resource_group_name}"
