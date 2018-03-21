@@ -102,23 +102,39 @@ resource "azurerm_virtual_machine" "jenkins" {
   provisioner "local-exec" {
     command = "echo 'done sleeping'"
   }
-  provisioner "chef" {
-    connection {
-      type        = "ssh"
-      host        = "${element(azurerm_public_ip.jenkins.*.ip_address, count.index)}"
-      user        = "${var.admin_user}"
-      private_key = "${file("ssh/id_rsa")}"
-      agent       = false
-    }
 
-    server_url      = "${var.chef_server_url}"
-    environment     = "${var.chef_environment}"
-    user_name       = "${var.chef_user_name}"
-    user_key        = "${file("ssh/validation.pem")}"
-    node_name       = "${var.computer_name}"
-    recreate_client = true
-    on_failure      = "continue"
-    ssl_verify_mode = ":verify_none"
-    run_list        = ["cb_dvo_jenkins::default", "cb_dvo_chefClient"]
+  # provisioner "local-exec" {
+  #   when    = "destroy"
+  #   command = "knife node delete ${var.computer_name} -y; knife client delete ${var.computer_name} -y"
+  # }
+}
+
+resource "azurerm_virtual_machine_extension" "jenkins" {
+  name                       = "ChefClient"
+  location                   = "${var.location}"
+  resource_group_name        = "${azurerm_resource_group.jenkins.name}"
+  virtual_machine_name       = "${azurerm_virtual_machine.jenkins.name}"
+  publisher                  = "Chef.Bootstrap.WindowsAzure"
+  type                       = "LinuxChefClient"
+  type_handler_version       = "1210.12"
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+  {    
+    "client_rb": "ssl_verify_mode :verify_none",
+    "bootstrap_options": {
+      "chef_node_name": "${var.computer_name}",
+      "chef_server_url": "${var.chef_server_url}",
+      "environment": "${var.chef_environment}",
+      "validation_client_name": "${var.chef_user_name}"
+    },
+    "runlist": "${var.chef_runlist}"
   }
+  SETTINGS
+
+  protected_settings = <<SETTINGS
+  {
+    "validation_key": "${file("ssh/validation.pem")}"
+  }
+  SETTINGS
 }

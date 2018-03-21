@@ -10,26 +10,29 @@ variable "location" {
   default = "eastus2"
 }
 
-# variable "publisher" {
-#   default = "OpenLogic"
-# }
 variable "publisher" {
-  default = "Canonical"
+  default = "OpenLogic"
+}
+
+# variable "publisher" {
+#   default = "Canonical"
+# }
+
+variable "offer" {
+  default = "CentOS"
 }
 
 # variable "offer" {
-#   default = "CentOS"
+#   default = "UbuntuServer"
 # }
-variable "offer" {
-  default = "UbuntuServer"
+
+variable "sku" {
+  default = "7.3"
 }
 
 # variable "sku" {
-#   default = "7.3"
+#   default = "16.04-LTS"
 # }
-variable "sku" {
-  default = "16.04-LTS"
-}
 
 variable "admin_password" {
   default = "ZyADTVd64swkdvfHFMeR"
@@ -71,4 +74,8 @@ variable "chef_user_name" {
 
 variable "ssh_key_thumbprint" {
   default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDjSq6wA1WDmJnBEaiTJUk2wrqZ7OaeDR6VQ+xV5iShotocGzmgIuZSWNnG/eakio9V0dlBct1UcPSStUp4Xe1ii6EE114XyM41S65rjzBGU4akWVQYsdUlIZflok9r8kWV3OOp38kXFzMXW+suHCuUS6w+QyWbFnBUJdGBYya/+gpZ8LcudfQ9267A0SYk2uhKg2XpcwUUf6GomhQrtjlRVRMobwXvQHTMIR8i7M+AC7WIYIcYoEVyg3bCStdFlLivUICz+NV88heCqjDjk19ZUkgUyH4cyLNEJzsjPOXBlgs2+wny53AzeSzBzjrvmiq4bK5nBO48UfHBS4lMmjYx devops@WTLMLSFLAHERTY"
+}
+
+variable "chef_runlist" {
+  default = "cb_dvo_jenkins"
 }
