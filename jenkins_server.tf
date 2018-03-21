@@ -6,10 +6,10 @@ resource "azurerm_resource_group" "jenkins" {
 
 # Create public IPs
 resource "azurerm_public_ip" "jenkins" {
-    name                         = "${var.computer_name}-pubip"
-    location                     = "${azurerm_resource_group.jenkins.location}"
-    resource_group_name          = "${azurerm_resource_group.jenkins.name}"
-    public_ip_address_allocation = "static"
+  name                         = "${var.computer_name}-pubip"
+  location                     = "${azurerm_resource_group.jenkins.location}"
+  resource_group_name          = "${azurerm_resource_group.jenkins.name}"
+  public_ip_address_allocation = "static"
 }
 
 # Create virtual NIC that will be used with our Jenkins instance.
@@ -58,11 +58,12 @@ resource "azurerm_virtual_machine" "jenkins" {
   }
 
   storage_os_disk {
-    name          = "${var.computer_name}-osdisk"
-    caching       = "ReadWrite"
-    create_option = "FromImage"
+    name              = "${var.computer_name}-osdisk"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
+
   # storage_os_disk {
   #   name          = "${var.computer_name}-osdisk"
   #   vhd_uri       = "${azurerm_storage_account.test.primary_blob_endpoint}${azurerm_storage_container.test.name}/${var.computer_name}-osdisk.vhd"
@@ -75,50 +76,49 @@ resource "azurerm_virtual_machine" "jenkins" {
     admin_username = "${var.admin_user}"
     admin_password = "${var.admin_password}"
   }
-  
   os_profile_linux_config {
     disable_password_authentication = false
-      ssh_keys {
-        path = "/home/${var.admin_user}/.ssh/authorized_keys"
-        key_data = "${file("~/.ssh/id_rsa.pub")}"
+
+    ssh_keys {
+      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
+      key_data = "${file("ssh/id_rsa.pub")}"
     }
   }
-
   connection {
-      type = "ssh"
-      host = "${element(azurerm_public_ip.jenkins.*.ip_address, count.index)}"
-      user = "${var.admin_user}"
-      # password = "${var.admin_password}"
-      private_key = "${file("~/.ssh/id_rsa")}"
-      agent = false
-  }
+    type = "ssh"
+    host = "${element(azurerm_public_ip.jenkins.*.ip_address, count.index)}"
+    user = "${var.admin_user}"
 
-  provisioner "local-exec" {
-       command = "echo 'sleeping'"
+    # password = "${var.admin_password}"
+    private_key = "${file("ssh/id_rsa")}"
+    agent       = false
   }
   provisioner "local-exec" {
-       command = "sleep 220"
+    command = "echo 'sleeping'"
   }
   provisioner "local-exec" {
-       command = "echo 'done sleeping'"
+    command = "sleep 220"
   }
-  
+  provisioner "local-exec" {
+    command = "echo 'done sleeping'"
+  }
   provisioner "chef" {
     connection {
-      type = "ssh"
-      host = "${element(azurerm_public_ip.jenkins.*.ip_address, count.index)}"
-      user = "${var.admin_user}"
-      private_key = "${file("~/.ssh/id_rsa")}"
-      agent = false
+      type        = "ssh"
+      host        = "${element(azurerm_public_ip.jenkins.*.ip_address, count.index)}"
+      user        = "${var.admin_user}"
+      private_key = "${file("ssh/id_rsa")}"
+      agent       = false
     }
-     server_url      = "${var.chef_server_url}"
-     environment     = "${var.chef_environment}"
-     user_name       = "${var.chef_user_name}"
-     user_key        = "${file("ssh/validation.pem")}"
-     node_name       = "${var.computer_name}"
-     recreate_client = true
-     on_failure      = "continue"
-     ssl_verify_mode = ":verify_none"
-     run_list        = ["cb_dvo_jenkins::default", "cb_dvo_chefClient"]
+
+    server_url      = "${var.chef_server_url}"
+    environment     = "${var.chef_environment}"
+    user_name       = "${var.chef_user_name}"
+    user_key        = "${file("ssh/validation.pem")}"
+    node_name       = "${var.computer_name}"
+    recreate_client = true
+    on_failure      = "continue"
+    ssl_verify_mode = ":verify_none"
+    run_list        = ["cb_dvo_jenkins::default", "cb_dvo_chefClient"]
   }
 }
