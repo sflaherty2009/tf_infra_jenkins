@@ -77,5 +77,5 @@ variable "ssh_key_thumbprint" {
 }
 
 variable "chef_runlist" {
-  default = "cb_dvo_jenkins"
+  default = "cb_dvo_jenkins, cb_dvo_chefClient"
 }
