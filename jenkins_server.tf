@@ -113,11 +113,10 @@ resource "azurerm_virtual_machine" "jenkins" {
   provisioner "local-exec" {
     command = "echo 'done sleeping'"
   }
-
-  # provisioner "local-exec" {
-  #   when    = "destroy"
-  #   command = "knife node delete ${var.computer_name} -y; knife client delete ${var.computer_name} -y"
-  # }
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "knife node delete ${var.computer_name} -y; knife client delete ${var.computer_name} -y"
+  }
 }
 
 resource "azurerm_virtual_machine_extension" "jenkins" {
