@@ -5,7 +5,7 @@ pipeline {
         }
     }
 environment {
-        TERRAFORM_CMD = 'sudo docker run -v `pwd`:/app -w /app/ hashicorp/terraform:light'
+        TERRAFORM_CMD = 'docker run -v `pwd`:/app -w /app/ hashicorp/terraform:light'
     }
     stages {
         stage('checkout repo') {
@@ -16,7 +16,7 @@ environment {
         stage('pull latest light terraform image') {
             steps {
                 sh  """
-                    sudo docker pull hashicorp/terraform:light
+                    docker pull hashicorp/terraform:light
                     """
             }
         }
