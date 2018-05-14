@@ -10,9 +10,7 @@ environment {
     stages {
         stage('checkout repo') {
             steps {
-            sh """
                 checkout scm
-            """
             }
         }
         stage('pull latest light terraform image') {
