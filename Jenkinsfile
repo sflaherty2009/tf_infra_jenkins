@@ -11,11 +11,7 @@ environment {
         stage('checkout repo') {
             steps {
             sh """
-                rm -rf /var/lib/jenkins/workspace/tmp
-                rm -rf /var/lib/jenkins/workspace/${env.JOB_NAME}/*
-                git clone https://TrekDevOps:WQrULM66cGyPyB@bitbucket.org/trekbikes/${env.JOB_NAME}.git /var/lib/jenkins/workspace/tmp
-                mv /var/lib/jenkins/workspace/tmp/* /var/lib/jenkins/workspace/${env.JOB_NAME}
-                rm -rf /var/lib/jenkins/workspace/tmp
+                checkout scm
             """
             }
         }
