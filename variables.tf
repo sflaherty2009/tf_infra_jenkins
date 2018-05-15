@@ -1,81 +1,81 @@
 variable "resource_group_name" {
-  default = "azl-jenkins-02-tst"
-}
-
-variable "storageaccount" {
-  default = "jenkins2storagetst"
+  default = "azl-dev-jnks-02"
 }
 
 variable "location" {
-  default = "eastus2"
+  description = "The default Azure region for the resource provisioning"
+  default     = "East US 2"
 }
 
-variable "publisher" {
-  default = "OpenLogic"
+variable "lin_image_publisher" {
+  description = "Publisher name of the linux machine image"
+  default     = "OpenLogic"
 }
 
-# variable "publisher" {
-#   default = "Canonical"
-# }
-
-variable "offer" {
-  default = "CentOS"
+variable "lin_image_offer" {
+  description = "Offer name of the linux machine image"
+  default     = "CentOS"
 }
 
-# variable "offer" {
-#   default = "UbuntuServer"
-# }
-
-variable "sku" {
-  default = "7.3"
+variable "lin_image_sku" {
+  description = "SKU of the linux machine image"
+  default     = "7.4"
 }
 
-# variable "sku" {
-#   default = "16.04-LTS"
-# }
+variable "lin_image_version" {
+  description = "Image version desired for linux machines"
+  default     = "7.4.20180118"
+}
 
 variable "admin_password" {
-  default = "ZyADTVd64swkdvfHFMeR"
+  description = "Enter admin password to SSH into VM"
+  default     = "R0llW1th!t"
 }
 
 variable "admin_user" {
-  default = "devops"
-}
-
-variable "version" {
-  default = "latest"
+  description = "Enter admin username to SSH into Linux VM"
+  default     = "local_admin"
 }
 
 variable "computer_name" {
-  default = "azl-jenkins-02-tst"
+  default = "azl-dev-jnks-02"
 }
 
 variable "vm_size" {
   default = "Standard_D1"
 }
 
-# this can be found using resource explorer in hte azure portal.  This one is Int-Mgmt
-variable "subnet_id" {
-  default = "/subscriptions/9fbf7025-df40-4908-b7fb-a3a2144cee91/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-02/subnets/AZ-SN-dvo"
+variable "count_jenkins_vms" {
+  description = "Number of desired jenkins vms"
+  default     = 1
 }
 
-# Need to get information about our chef server from Ray. 
+# this can be found using resource explorer in hte azure portal.  This one is Int-Mgmt
+variable "subnet_id" {
+  description = "Full path of the subnet desired for the node"
+  default     = "/subscriptions/9fbf7025-df40-4908-b7fb-a3a2144cee91/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-02/subnets/AZ-SN-dvo"
+}
+
 variable "chef_server_url" {
-  default = "https://10.16.192.4/organizations/trek"
+  description = "Enter full chef url using private ip"
+  default     = "https://10.16.192.4/organizations/trek"
 }
 
 variable "chef_environment" {
-  default = "production"
+  description = "Enter desired environment to be setup on chef server"
+  default     = "testing"
 }
 
 variable "chef_user_name" {
-  default = "trek-validator"
-}
-
-variable "ssh_key_thumbprint" {
-  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDjSq6wA1WDmJnBEaiTJUk2wrqZ7OaeDR6VQ+xV5iShotocGzmgIuZSWNnG/eakio9V0dlBct1UcPSStUp4Xe1ii6EE114XyM41S65rjzBGU4akWVQYsdUlIZflok9r8kWV3OOp38kXFzMXW+suHCuUS6w+QyWbFnBUJdGBYya/+gpZ8LcudfQ9267A0SYk2uhKg2XpcwUUf6GomhQrtjlRVRMobwXvQHTMIR8i7M+AC7WIYIcYoEVyg3bCStdFlLivUICz+NV88heCqjDjk19ZUkgUyH4cyLNEJzsjPOXBlgs2+wny53AzeSzBzjrvmiq4bK5nBO48UfHBS4lMmjYx devops@WTLMLSFLAHERTY"
+  description = "Enter username to be utilized with validation key"
+  default     = "trek-validator"
 }
 
 variable "chef_runlist" {
-  default = "cb_dvo_jenkins, cb_dvo_chefClient"
+  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_localAccounts, cb_dvo_jenkins"
+}
+
+variable "chef_client_version" {
+  description = "Version of Chef-Client to utilized during provision time"
+  default     = "13.8.5"
 }

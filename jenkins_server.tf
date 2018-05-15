@@ -1,14 +1,3 @@
-# backend stuff for storing lock file.
-terraform {
-  backend "azurerm" {
-    resource_group_name  = "dvo_terraform"
-    storage_account_name = "terraformlock"
-    container_name       = "jenkins"
-    key                  = "arm.jenkins.lock"
-    access_key           = "tPLgDxuAjzeFu32JO5DwD6eh53+TrKyQ+fgohBmvFlH12WzU9PaDM64oNAtQYxk5Pd/m78J0yhPgOC5cja+tVA=="
-  }
-}
-
 # Create resource group that will be used with Jenkins deploy
 resource "azurerm_resource_group" "jenkins" {
   name     = "${var.resource_group_name}"
@@ -37,23 +26,23 @@ resource "azurerm_network_interface" "jenkins" {
   }
 }
 
-# STORAGE =======================================
-# resource "azurerm_storage_account" "test" {
-#   name                     = "${var.storageaccount}"
-#   resource_group_name      = "${azurerm_resource_group.jenkins.name}"
-#   location                 = "${var.location}"
-#   account_tier             = "Standard"
-#   account_replication_type = "LRS"
-# }
+resource "azurerm_storage_account" "jenkins" {
+  name                     = "azldevjenkin${format("%02d", count.index+1)}s"
+  resource_group_name      = "${azurerm_resource_group.jenkins.name}"
+  location                 = "${azurerm_resource_group.jenkins.location}"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  count                    = "${var.count_jenkins_vms}"
+}
 
-# resource "azurerm_storage_container" "test" {
-#   name                  = "vhds"
-#   resource_group_name   = "${azurerm_resource_group.jenkins.name}"
-#   storage_account_name  = "${azurerm_storage_account.test.name}"
-#   container_access_type = "private"
-# }
+resource "azurerm_storage_container" "jenkins" {
+  name                  = "vhds"
+  resource_group_name   = "${azurerm_resource_group.jenkins.name}"
+  storage_account_name  = "${element(azurerm_storage_account.jenkins.*.name, count.index)}"
+  container_access_type = "private"
+  count                 = "${var.count_jenkins_vms}"
+}
 
-# VIRTUAL MACHINE ================================
 resource "azurerm_virtual_machine" "jenkins" {
   name                  = "${var.computer_name}"
   location              = "${var.location}"
@@ -61,58 +50,41 @@ resource "azurerm_virtual_machine" "jenkins" {
   network_interface_ids = ["${azurerm_network_interface.jenkins.id}"]
   vm_size               = "${var.vm_size}"
 
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
+
   storage_image_reference {
-    publisher = "${var.publisher}"
-    offer     = "${var.offer}"
-    sku       = "${var.sku}"
-    version   = "${var.version}"
+    publisher = "${var.lin_image_publisher}"
+    offer     = "${var.lin_image_offer}"
+    sku       = "${var.lin_image_sku}"
+    version   = "${var.lin_image_version}"
   }
 
   storage_os_disk {
-    name              = "${var.computer_name}-osdisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
+    name          = "osdisk"
+    vhd_uri       = "${element(azurerm_storage_account.jenkins.*.primary_blob_endpoint, count.index)}${element(azurerm_storage_container.jenkins.*.name, count.index)}/osdisk.vhd"
+    caching       = "ReadWrite"
+    create_option = "FromImage"
   }
 
-  # storage_os_disk {
-  #   name          = "${var.computer_name}-osdisk"
-  #   vhd_uri       = "${azurerm_storage_account.test.primary_blob_endpoint}${azurerm_storage_container.test.name}/${var.computer_name}-osdisk.vhd"
-  #   caching       = "ReadWrite"
-  #   create_option = "FromImage"
-  # }
+  storage_data_disk {
+    name          = "datadisk-0"
+    vhd_uri       = "${element(azurerm_storage_account.jenkins.*.primary_blob_endpoint, count.index)}${element(azurerm_storage_container.jenkins.*.name, count.index)}/datadisk-0.vhd"
+    disk_size_gb  = "979"
+    create_option = "Empty"
+    lun           = 0
+  }
 
   os_profile {
     computer_name  = "${var.computer_name}"
     admin_username = "${var.admin_user}"
     admin_password = "${var.admin_password}"
   }
+
   os_profile_linux_config {
     disable_password_authentication = false
+  }
 
-    ssh_keys {
-      path     = "/home/${var.admin_user}/.ssh/authorized_keys"
-      key_data = "${file("ssh/id_rsa.pub")}"
-    }
-  }
-  connection {
-    type = "ssh"
-    host = "${element(azurerm_public_ip.jenkins.*.ip_address, count.index)}"
-    user = "${var.admin_user}"
-
-    # password = "${var.admin_password}"
-    private_key = "${file("ssh/id_rsa")}"
-    agent       = false
-  }
-  provisioner "local-exec" {
-    command = "echo 'sleeping'"
-  }
-  provisioner "local-exec" {
-    command = "sleep 220"
-  }
-  provisioner "local-exec" {
-    command = "echo 'done sleeping'"
-  }
   provisioner "local-exec" {
     when    = "destroy"
     command = "knife node delete ${var.computer_name} -y; knife client delete ${var.computer_name} -y"
@@ -130,8 +102,9 @@ resource "azurerm_virtual_machine_extension" "jenkins" {
   auto_upgrade_minor_version = true
 
   settings = <<SETTINGS
-  {    
+  {
     "client_rb": "ssl_verify_mode :verify_none",
+    "bootstrap_version": "${var.chef_client_version}",
     "bootstrap_options": {
       "chef_node_name": "${var.computer_name}",
       "chef_server_url": "${var.chef_server_url}",
@@ -144,7 +117,8 @@ resource "azurerm_virtual_machine_extension" "jenkins" {
 
   protected_settings = <<SETTINGS
   {
-    "validation_key": "${file("ssh/validation.pem")}"
+    "validation_key": "${file("keys/validation.pem")}",
+    "secret": "${file("keys/encrypted_data_bag_secret")}"
   }
   SETTINGS
 }
