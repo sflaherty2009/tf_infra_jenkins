@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default = "azl-dev-jnks-02"
+  default = "azl-mdn-jnks-02"
 }
 
 variable "location" {
@@ -38,7 +38,7 @@ variable "admin_user" {
 }
 
 variable "computer_name" {
-  default = "azl-dev-jnks-02"
+  default = "azl-mdn-jnks-02"
 }
 
 variable "vm_size" {
@@ -63,7 +63,7 @@ variable "chef_server_url" {
 
 variable "chef_environment" {
   description = "Enter desired environment to be setup on chef server"
-  default     = "testing"
+  default     = "development"
 }
 
 variable "chef_user_name" {
@@ -72,7 +72,7 @@ variable "chef_user_name" {
 }
 
 variable "chef_runlist" {
-  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_localAccounts, cb_dvo_jenkins"
+  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_localAccounts, cb_dvo_jenkins, cb_dvo_logging"
 }
 
 variable "chef_client_version" {
