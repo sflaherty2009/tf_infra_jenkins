@@ -77,8 +77,8 @@ resource "azurerm_virtual_machine" "jenkins" {
 
   os_profile {
     computer_name  = "${var.computer_name}"
-    admin_username = "${var.admin_user}"
-    admin_password = "${var.admin_password}"
+    admin_username = "${local.admin_user}"
+    admin_password = "${local.admin_password}"
   }
 
   os_profile_linux_config {
@@ -117,8 +117,8 @@ resource "azurerm_virtual_machine_extension" "jenkins" {
 
   protected_settings = <<SETTINGS
   {
-    "validation_key": "${file("keys/validation.pem")}",
-    "secret": "${file("keys/encrypted_data_bag_secret")}"
+    "validation_key": "${file("${path.module}/secrets/validation.pem")}",
+    "secret": "${file("${path.module}/secrets/jenkins_secret")}"
   }
   SETTINGS
 }

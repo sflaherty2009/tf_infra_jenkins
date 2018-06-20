@@ -27,16 +27,6 @@ variable "lin_image_version" {
   default     = "7.4.20180118"
 }
 
-variable "admin_password" {
-  description = "Enter admin password to SSH into VM"
-  default     = "R0llW1th!t"
-}
-
-variable "admin_user" {
-  description = "Enter admin username to SSH into Linux VM"
-  default     = "local_admin"
-}
-
 variable "computer_name" {
   default = "azl-mdn-jnks-02"
 }
@@ -72,10 +62,16 @@ variable "chef_user_name" {
 }
 
 variable "chef_runlist" {
-  default = "cb_dvo_resolveDNS, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_localAccounts, cb_dvo_jenkins, cb_dvo_logging"
+  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_localAccounts, cb_dvo_jenkins, cb_dvo_logging"
 }
 
 variable "chef_client_version" {
   description = "Version of Chef-Client to utilized during provision time"
   default     = "13.8.5"
+}
+
+locals {
+  admin_credentials = "${split("\n",file("${path.module}/secrets/admin_credentials"))}"
+  admin_user = "${local.admin_credentials[0]}"
+  admin_password = "${local.admin_credentials[1]}"
 }
