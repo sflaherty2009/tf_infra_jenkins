@@ -1,6 +1,7 @@
 variable "subscription_id" {
   default = {
     "default" = "9db13c96-62ad-4945-9579-74aeed296e48"
+    "mdn"     = "9db13c96-62ad-4945-9579-74aeed296e48"
     "ss"      = "9db13c96-62ad-4945-9579-74aeed296e48"
     "prd"     = "9fbf7025-df40-4908-b7fb-a3a2144cee91"
   }
@@ -34,6 +35,7 @@ variable "lin_image_version" {
 variable "vm_size" {
   default = {
     "default" = "Standard_D2_v2"
+    "mdn"     = "Standard_D2_v2"
     "ss"      = "Standard_D2_v2"
     "prd"     = "Standard_D2_v2"
   }
@@ -44,6 +46,7 @@ variable "count_jenkins_vms" {
 
   default = {
     "default" = 1
+    "mdn"     = 1
     "ss"      = 1
     "prd"     = 1
   }
@@ -54,6 +57,7 @@ variable "subnet_id" {
 
   default = {
     "default" = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
+    "mdn"     = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
     "ss"      = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
     "prd"     = "/subscriptions/9fbf7025-df40-4908-b7fb-a3a2144cee91/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-02/subnets/AZ-SN-dvo"
   }
@@ -69,7 +73,8 @@ variable "chef_environment" {
 
   default = {
     "default" = "development"
-    "ss"      = "development"
+    "mdn"     = "development"
+    "ss"      = "testing"
     "prd"     = "production"
   }
 }
