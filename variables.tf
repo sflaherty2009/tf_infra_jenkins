@@ -1,5 +1,10 @@
-variable "resource_group_name" {
-  default = "azl-mdn-jnks-02"
+variable "subscription_id" {
+  default = {
+    "default" = "9db13c96-62ad-4945-9579-74aeed296e48"
+    "mdn"     = "9db13c96-62ad-4945-9579-74aeed296e48"
+    "ss"      = "9db13c96-62ad-4945-9579-74aeed296e48"
+    "prd"     = "9fbf7025-df40-4908-b7fb-a3a2144cee91"
+  }
 }
 
 variable "location" {
@@ -27,23 +32,35 @@ variable "lin_image_version" {
   default     = "7.4.20180118"
 }
 
-variable "computer_name" {
-  default = "azl-mdn-jnks-02"
-}
-
 variable "vm_size" {
-  default = "Standard_D1"
+  default = {
+    "default" = "Standard_D2_v2"
+    "mdn"     = "Standard_D2_v2"
+    "ss"      = "Standard_D2_v2"
+    "prd"     = "Standard_D2_v2"
+  }
 }
 
 variable "count_jenkins_vms" {
   description = "Number of desired jenkins vms"
-  default     = 1
+
+  default = {
+    "default" = 1
+    "mdn"     = 1
+    "ss"      = 1
+    "prd"     = 1
+  }
 }
 
-# this can be found using resource explorer in hte azure portal.  This one is Int-Mgmt
 variable "subnet_id" {
   description = "Full path of the subnet desired for the node"
-  default     = "/subscriptions/9fbf7025-df40-4908-b7fb-a3a2144cee91/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-02/subnets/AZ-SN-dvo"
+
+  default = {
+    "default" = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
+    "mdn"     = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
+    "ss"      = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
+    "prd"     = "/subscriptions/9fbf7025-df40-4908-b7fb-a3a2144cee91/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-02/subnets/AZ-SN-dvo"
+  }
 }
 
 variable "chef_server_url" {
@@ -53,7 +70,13 @@ variable "chef_server_url" {
 
 variable "chef_environment" {
   description = "Enter desired environment to be setup on chef server"
-  default     = "development"
+
+  default = {
+    "default" = "development"
+    "mdn"     = "development"
+    "ss"      = "testing"
+    "prd"     = "production"
+  }
 }
 
 variable "chef_user_name" {
@@ -62,7 +85,7 @@ variable "chef_user_name" {
 }
 
 variable "chef_runlist" {
-  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_localAccounts, cb_dvo_jenkins, cb_dvo_logging"
+  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_docker, cb_dvo_localAccounts, cb_dvo_jenkins, cb_dvo_logging"
 }
 
 variable "chef_client_version" {
@@ -72,6 +95,6 @@ variable "chef_client_version" {
 
 locals {
   admin_credentials = "${split("\n",file("${path.module}/secrets/admin_credentials"))}"
-  admin_user = "${local.admin_credentials[0]}"
-  admin_password = "${local.admin_credentials[1]}"
+  admin_user        = "${local.admin_credentials[0]}"
+  admin_password    = "${local.admin_credentials[1]}"
 }
