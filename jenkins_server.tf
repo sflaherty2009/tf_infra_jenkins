@@ -10,6 +10,7 @@ resource "azurerm_public_ip" "jenkins" {
   location                     = "${azurerm_resource_group.jenkins.location}"
   resource_group_name          = "${azurerm_resource_group.jenkins.name}"
   public_ip_address_allocation = "static"
+  domain_name_label            = "azl-${terraform.workspace}-jnks-${format("%02d", count.index+1)}"
   count                        = "${lookup(var.count_jenkins_vms,terraform.workspace)}"
 }
 
