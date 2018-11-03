@@ -85,7 +85,7 @@ variable "chef_user_name" {
 }
 
 variable "chef_runlist" {
-  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addStorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_docker, cb_dvo_localAccounts, cb_dvo_jenkins"
+  default = "cb_dvo_resolveDNS, cb_dvo_chefClient, cb_dvo_selinux, cb_dvo_addstorage, cb_dvo_adJoin, cb_dvo_sshd, cb_dvo_authorization, cb_dvo_prtg, cb_dvo_docker, cb_dvo_localAccounts, cb_dvo_jenkins"
 }
 
 variable "chef_client_version" {
