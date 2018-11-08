@@ -9,4 +9,3 @@ DevOps <devops@trekbikes.com>
 ## License
 
 See LICENSE.md
-
