@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+## [1.0.2] - 2018-11-24
+
+### Changed
+
+- Removed cb_dvo_addstorage and added disk setup custom script extension.
+
 ## [1.0.1] - 2018-11-6
 
 ### Changed
