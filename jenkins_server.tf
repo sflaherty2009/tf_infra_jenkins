@@ -95,6 +95,34 @@ resource "azurerm_virtual_machine" "jenkins" {
   }
 }
 
+resource "azurerm_virtual_machine_extension" "disk_setup" {
+  name                 = "disksetup"
+  location             = "${azurerm_resource_group.jenkins.location}"
+  resource_group_name  = "${azurerm_resource_group.jenkins.name}"
+  virtual_machine_name = "${azurerm_virtual_machine.jenkins.name}"
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  settings = <<SETTINGS
+    {
+      "fileUris": ["https://aztrksa0qyat0bootscripts.blob.core.windows.net/custom-script-extension-scripts/Linux/disk_setup_linux.sh"],
+      "commandToExecute": "./disk_setup_linux.sh"
+    }
+SETTINGS
+
+  protected_settings = <<SETTINGS
+    {
+      "storageAccountName": "aztrksa0qyat0bootscripts",
+      "storageAccountKey": "${local.script_storage_key}"
+    }
+SETTINGS
+
+  tags {
+    environment = "Terraform"
+  }
+}
+
 resource "azurerm_virtual_machine_extension" "jenkins" {
   name                       = "ChefClient"
   location                   = "${azurerm_resource_group.jenkins.location}"
@@ -105,6 +133,7 @@ resource "azurerm_virtual_machine_extension" "jenkins" {
   type_handler_version       = "1210.12"
   auto_upgrade_minor_version = true
   count                      = "${lookup(var.count_jenkins_vms,terraform.workspace)}"
+  depends_on                 = ["azurerm_virtual_machine_extension.disk_setup"]
 
   settings = <<SETTINGS
   {
