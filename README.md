@@ -22,6 +22,17 @@ This Terraform configuration is designed for setting up a Jenkins server in Azur
 ## Prerequisites
 - Azure account with required permissions.
 - Terraform installed and properly configured.
+- Chef Server up and running with cookbooks available. 
+    - cb_dvo_resolveDNS, 
+    - cb_dvo_chefClient, 
+    - cb_dvo_selinux, 
+    - cb_dvo_adjoin, 
+    - cb_dvo_sshd, 
+    - cb_dvo_authorization, 
+    - cb_dvo_prtg, 
+    - cb_dvo_docker, 
+    - cb_dvo_localAccounts, 
+    - cb_dvo_jenkins"
 
 ## Usage
 1. **Initialization**: Begin by initializing Terraform with `terraform init`.
