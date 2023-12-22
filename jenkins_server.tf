@@ -9,7 +9,7 @@ resource "azurerm_public_ip" "jenkins" {
   name                         = "azl-${terraform.workspace}-jnks-${format("%02d", count.index+1)}-pubip"
   location                     = "${azurerm_resource_group.jenkins.location}"
   resource_group_name          = "${azurerm_resource_group.jenkins.name}"
-  public_ip_address_allocation = "static"
+  allocation_method            = "static"
   domain_name_label            = "azl-${terraform.workspace}-jnks-${format("%02d", count.index+1)}"
   count                        = "${lookup(var.count_jenkins_vms,terraform.workspace)}"
 }
@@ -40,7 +40,6 @@ resource "azurerm_storage_account" "jenkins" {
 
 resource "azurerm_storage_container" "jenkins" {
   name                  = "vhds"
-  resource_group_name   = "${azurerm_resource_group.jenkins.name}"
   storage_account_name  = "${element(azurerm_storage_account.jenkins.*.name, count.index)}"
   container_access_type = "private"
   count                 = "${lookup(var.count_jenkins_vms,terraform.workspace)}"
@@ -97,9 +96,7 @@ resource "azurerm_virtual_machine" "jenkins" {
 
 resource "azurerm_virtual_machine_extension" "disk_setup" {
   name                 = "disksetup"
-  location             = "${azurerm_resource_group.jenkins.location}"
-  resource_group_name  = "${azurerm_resource_group.jenkins.name}"
-  virtual_machine_name = "${azurerm_virtual_machine.jenkins.name}"
+  virtual_machine_id = "${azurerm_virtual_machine.jenkins.id}"
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"
@@ -118,16 +115,14 @@ SETTINGS
     }
 SETTINGS
 
-  tags {
+  tags = {
     environment = "Terraform"
   }
 }
 
 resource "azurerm_virtual_machine_extension" "jenkins" {
   name                       = "ChefClient"
-  location                   = "${azurerm_resource_group.jenkins.location}"
-  resource_group_name        = "${azurerm_resource_group.jenkins.name}"
-  virtual_machine_name       = "${element(azurerm_virtual_machine.jenkins.*.name, count.index)}"
+  virtual_machine_id       = "${element(azurerm_virtual_machine.jenkins.*.id, count.index)}"
   publisher                  = "Chef.Bootstrap.WindowsAzure"
   type                       = "LinuxChefClient"
   type_handler_version       = "1210.12"

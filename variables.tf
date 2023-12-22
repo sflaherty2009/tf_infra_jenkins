@@ -1,9 +1,9 @@
 variable "subscription_id" {
   default = {
-    "default" = "9db13c96-62ad-4945-9579-74aeed296e48"
-    "mdn"     = "9db13c96-62ad-4945-9579-74aeed296e48"
-    "ss"      = "9db13c96-62ad-4945-9579-74aeed296e48"
-    "prd"     = "9fbf7025-df40-4908-b7fb-a3a2144cee91"
+    "default" = "xxxx"
+    "mdn"     = "xxxx"
+    "ss"      = "xxxx"
+    "prd"     = "xxxx"
   }
 }
 
@@ -56,16 +56,16 @@ variable "subnet_id" {
   description = "Full path of the subnet desired for the node"
 
   default = {
-    "default" = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
-    "mdn"     = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
-    "ss"      = "/subscriptions/9db13c96-62ad-4945-9579-74aeed296e48/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-01/subnets/AZ-SN-dvo"
-    "prd"     = "/subscriptions/9fbf7025-df40-4908-b7fb-a3a2144cee91/resourceGroups/AZ-RG-Network/providers/Microsoft.Network/virtualNetworks/AZ-VN-EastUS2-02/subnets/AZ-SN-dvo"
+    "default" = "xxxx"
+    "mdn"     = "xxxx"
+    "ss"      = "xxxx"
+    "prd"     = "xxxx"
   }
 }
 
 variable "chef_server_url" {
   description = "Enter full chef url using private ip"
-  default     = "https://10.16.192.4/organizations/trek"
+  default     = "https://10.16.192.4/organizations/org"
 }
 
 variable "chef_environment" {
@@ -81,7 +81,7 @@ variable "chef_environment" {
 
 variable "chef_user_name" {
   description = "Enter username to be utilized with validation key"
-  default     = "trek-validator"
+  default     = "validator"
 }
 
 variable "chef_runlist" {

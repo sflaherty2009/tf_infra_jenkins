@@ -6,8 +6,9 @@ terraform {
     container_name       = "jenkins"
     key                  = "arm.jenkins.lock"
   }
-}
-
-provider "azurerm" {
-  subscription_id = "${lookup(var.subscription_id,terraform.workspace)}"
+  required_providers {
+      azurerm = {
+         subscription_id = "${lookup(var.subscription_id,terraform.workspace)}"
+      }
+   }
 }
