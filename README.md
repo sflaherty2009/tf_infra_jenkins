@@ -1,15 +1,39 @@
-# dvo_infra_jenkins
+# Jenkins Server Terraform Configuration
 
-Builds Jenkins server infrastructure.
+## Overview
+This Terraform configuration is designed for setting up a Jenkins server in Azure. It manages resources necessary for a robust Jenkins deployment, ensuring an organized and scalable infrastructure.
 
-## Maintainers
+## Configuration Files
 
-DevOps <devops@trekbikes.com>
+### `jenkins_server.tf`
+- Sets up the Jenkins-specific Azure resources.
+- Creates a dedicated resource group for Jenkins.
+- Manages public IPs for Jenkins server access.
+- Manages initial chef run to install and implement Jenkins software. 
 
-## Notes
+### `provider.tf`
+- Configures the Terraform backend for Azure.
+- Specifies required Azure provider settings, including dynamic subscription IDs.
 
-- Disk setup scripts are pulled from blob storage via the aztrksa0qyat0bootscripts storage account. The version controlled source of truth for these scripts is the DevOps Bitbucket project under the dvo-general repository.
+### `variables.tf`
+- Defines essential variables for the deployment.
+- Includes settings for the Azure region and details of the Linux image for the Jenkins server.
 
-## License
+## Prerequisites
+- Azure account with required permissions.
+- Terraform installed and properly configured.
 
-See LICENSE.md
+## Usage
+1. **Initialization**: Begin by initializing Terraform with `terraform init`.
+2. **Configuration**: Update `variables.tf` as per your Azure environment.
+3. **Execution**: Deploy the infrastructure using `terraform apply`.
+
+## Security and Maintenance
+- Securely handle your Azure credentials and Terraform state files.
+- Regularly update the Terraform scripts to align with Azure and Jenkins updates.
+
+For detailed configuration and customization, refer to the contents within each Terraform file.
+
+---
+
+Note: This README is a draft and should be further refined for detailed instructions and best practices specific to your infrastructure and organizational needs.
